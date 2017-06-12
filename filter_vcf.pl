@@ -9,11 +9,35 @@ my $imf = $ARGV[2] || 0.85;
 my $af1 = $ARGV[3] || 0.90;
 my $rdp4 = $ARGV[4] || 0.80;
 
-filter_vcf($vcf_file);
+my $filter_vcf = filter_vcf($vcf_file);
+annotate($filter_vcf);
+
+sub annotate {
+	my $file = shift;
+	my $prefix = '';
+	if ($file =~ /(\S+).vcf/) {
+		$prefix = $1;
+	} else {
+		$prefix = 'filtered';
+	}
+	print STDERR "Annotating VCF ...\n";
+	system("snpeff $file > $prefix.ann.vcf");
+	unlink $file;
+	unlink "snpEff_genes.txt";
+	unlink "snpEff_summary.html";
+}
 
 sub filter_vcf {
 	my ($file) = @_;
-	open (VCF, $file) or die $!;
+	print STDERR "Filtering VCF ...\n";
+	open (VCF, $file) or die "Cannot open VCF file: $file, $!\n";
+	my $prefix = '';
+	if ($file =~ /(\S+).vcf/) {
+		$prefix = $1;
+	} else {
+		$prefix = 'filtered';
+	}
+	open (FVCF, ">$prefix.filtered.vcf") or die "Cannot open file: $prefix.vcf, $!\n";
 	while (<VCF>) {
 		chomp;
 		next if /^\#/;
@@ -36,9 +60,11 @@ sub filter_vcf {
 		}
 		$w[7] .= 'DP=' . $var->{'DP'} . ';AF1=' . $var->{'AF1'} . ';DP4=' . $var->{'DP4'};
 		my $vcf_line = join "\t", @w;
-		print $vcf_line . "\n";
+		print FVCF $vcf_line . "\n";
 	}
-	return 1;
+	close VCF;
+	close FVCF;
+	return "$prefix.filtered.vcf";
 }
 
 sub is_indel {

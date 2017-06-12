@@ -9,10 +9,10 @@ my $imf = $ARGV[2] || 0.85;
 my $af1 = $ARGV[3] || 0.90;
 my $rdp4 = $ARGV[4] || 0.80;
 
-filter_vcf($vcf_file, $dp, $imf, $af1, $rdp4);
+filter_vcf($vcf_file);
 
 sub filter_vcf {
-	my ($file, $dp, $af1) = @_;
+	my ($file) = @_;
 	open (VCF, $file) or die $!;
 	while (<VCF>) {
 		chomp;

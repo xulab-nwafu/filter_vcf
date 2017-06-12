@@ -1,4 +1,4 @@
-prefix=/home/xulab/sf/filter_vcf/current
+prefix=${HOME}/sf/filter_vcf/current
 
 all:
 	mkdir -p bin

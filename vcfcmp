@@ -1,0 +1,6 @@
+bgzip $1
+bgzip $2
+bcftools index $1.gz
+bcftools index $2.gz
+bcftools isec $1.gz $2.gz -p filtered
+filter_vcf.pl filtered/0001.vcf > sector.vcf

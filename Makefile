@@ -3,11 +3,11 @@ prefix=${HOME}/sf/filter_vcf/current
 all:
 	mkdir -p bin
 	mkdir -p doc
-	cp filter_vcf.pl vcfcmp bin/
+	cp filter_vcf*.pl vcfcmp* bin/
 	cp README.md doc/
 	chmod 755 bin/*
 	chmod 644 doc/*
-install: filter_vcf.pl vcfcmp
+install: filter_vcf.pl vcfcmp filter_vcf.ss.pl vcfcmp.ss
 	mkdir -p $(prefix)/bin
 	mkdir -p $(prefix)/doc
 	install -p -m 0755 bin/* $(prefix)/bin/

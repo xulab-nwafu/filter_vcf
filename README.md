@@ -16,13 +16,17 @@ vcfcmp
   e.g.: vcfcmp WT.vcf MU.vcf
 ```
 
+Sclerotinia sclerotiorum
+------------------------
+- For _Sclerotinia sclerotiorum_, use vcfcmp.ss and filter_vcf.ss.pl, please.
+
 Author
 ------
 Qinhu Wang (wangqinhu@nwafu.edu.cn)
 
 Copyright
 ---------
-2017 - Xu Lab, Northwest A&F University
+2017 (c) Xu Lab, Northwest A&F University
 
 License
 -------

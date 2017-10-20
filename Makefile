@@ -4,7 +4,7 @@ all:
 	mkdir -p bin
 	mkdir -p doc
 	cp filter_vcf*.pl vcfcmp* bin/
-	cp README.md doc/
+	cp README.md LICENSE doc/
 	chmod 755 bin/*
 	chmod 644 doc/*
 install: filter_vcf.pl vcfcmp filter_vcf.ss.pl vcfcmp.ss

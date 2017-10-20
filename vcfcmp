@@ -1,12 +1,12 @@
 #!/bin/bash
 
 usage () {
-	echo "Usage: $0 ref.vcf var.vcf"
+	echo "Usage: $0 ref.vcf var1.vcf var2.vcf ..."
 	echo " e.g.: $0 WT.vcf MU.vcf"
 	exit 1
 }
 
-if [ $# != 2 ] ; then
+if [ $# -lt 2 ] ; then
 	usage
 fi
 
@@ -15,32 +15,58 @@ if [ $1 == "-h" ] ; then
 fi
 
 ref=$1
-var=$2
+shift
 
 if [ ! -f $ref ]; then
 	echo "Reference VCF file ($ref) does not exist."
 	usage
 fi
 
-if [ ! -f $var ]; then
-	echo "Mutant VCF file ($var) does not exist."
-	usage
+# ref
+if [ ! -f $ref.gz ]; then
+	bgzip $ref
+fi
+if [ ! -f $ref.gz.csi ]; then
+	bcftools index $ref.gz
 fi
 
-# Use bcftools to subtract background
-bgzip $ref
-bgzip $var
-bcftools index $ref.gz
-bcftools index $var.gz
-echo "Removing background variants in wild-type ..."
-bcftools isec $ref.gz $var.gz -p filtered
-# Restore original VCF file
-gunzip $ref.gz $var.gz
-rm -rf $ref.gz.csi $var.gz.csi
+mkdir -p ${PWD}/sector
 
-# Use filter_vcf.pl to filter and annotate VCF file
-filter_vcf.pl filtered/0001.vcf
-mv ${PWD}/filtered/0001.filtered.ann.vcf ${PWD}/sector.vcf
+# var
+for var in $@; do
 
-echo "Done."
-echo "Filtered VCF file is available at ${PWD}/sector.vcf"
+	if [ ! -f $var ]; then
+		echo "Mutant VCF file ($var) does not exist."
+		usage
+	fi
+
+	# Use bcftools to subtract background
+	echo "Removing background variants in $var ..."
+	if [ ! -f $var.gz ]; then
+		bgzip $var
+	fi
+	if [ ! -f $var.gz.csi ]; then
+		bcftools index $var.gz
+	fi
+	bcftools isec $ref.gz $var.gz -p filtered
+
+	# Restore original VCF file
+	gunzip $var.gz
+	rm -rf $var.gz.csi
+
+	# Use filter_vcf.pl to filter and annotate VCF file
+	filter_vcf.pl filtered/0001.vcf
+
+	# Prepare out vcf
+	vcf=`basename $var`
+	mv ${PWD}/filtered/0001.filtered.ann.vcf ${PWD}/sector/$vcf
+	rm -rf filtered
+
+done
+
+# Restore ref.vcf
+gunzip $ref.gz
+rm -rf $ref.gz.csi
+
+echo "Sector VCF files are available at ${PWD}/sector/"
+echo "Done"

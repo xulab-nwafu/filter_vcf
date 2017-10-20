@@ -12,8 +12,8 @@ Usage: filter_vcf.pl vcf_file <DP> <IMF> <AF1> <DP4>
 vcfcmp
 ---------------
 ```
- Usage: vcfcmp ref.vcf var.vcf
-  e.g.: vcfcmp WT.vcf MU.vcf
+Usage: ./vcfcmp ref.vcf var1.vcf var2.vcf ...
+ e.g.: ./vcfcmp WT.vcf MU.vcf
 ```
 
 Sclerotinia sclerotiorum

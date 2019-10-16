@@ -55,7 +55,8 @@ for var in $@; do
 	rm -rf $var.gz.csi
 
 	# Use filter_vcf.pl to filter and annotate VCF file
-	filter_vcf.ss.pl filtered/0001.vcf
+	# 4n: 25%, th = 15%
+	filter_vcf.pl filtered/0001.vcf 20 0.15 0.15 0.15
 
 	# Prepare out vcf
 	vcf=`basename $var`

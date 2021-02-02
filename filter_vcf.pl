@@ -8,9 +8,12 @@ my $dp = $ARGV[1] || 20;
 my $imf = $ARGV[2] || 0.85;
 my $af1 = $ARGV[3] || 0.90;
 my $rdp4 = $ARGV[4] || 0.50;
+my $anno = $ARGV[5] || 'Y';
 
 my $filter_vcf = filter_vcf($vcf_file);
-annotate($filter_vcf);
+if ($anno eq 'Y') {
+	annotate($filter_vcf);
+}
 
 sub annotate {
 	my $file = shift;
